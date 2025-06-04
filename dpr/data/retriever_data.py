@@ -103,7 +103,7 @@ class CsvQASrc(QASrc):
         # size = self.data_size
         samples_count = 0
         # TODO: optimize
-        with open(self.file) as ifile:
+        with open(self.file, encoding="utf-8") as ifile:
             reader = csv.reader(ifile, delimiter="\t")
             for row in reader:
                 question = row[self.question_col]
@@ -270,7 +270,7 @@ class CsvCtxSrc(RetrieverData):
     def load_data_to(self, ctxs: Dict[object, BiEncoderPassage]):
         super().load_data()
         logger.info("Reading file %s", self.file)
-        with open(self.file) as ifile:
+        with open(self.file, encoding='utf-8') as ifile:
             reader = csv.reader(ifile, delimiter="\t")
             for row in reader:
                 # for row in ifile:

@@ -1,0 +1,535 @@
+[2025-05-22 00:41:16,015][root][INFO] - CFG's local_rank=-1
+[2025-05-22 00:41:16,015][root][INFO] - Env WORLD_SIZE=None
+[2025-05-22 00:41:16,016][root][INFO] - Initialized host t-sh as d.rank -1 on device=cuda, n_gpu=2, world size=1
+[2025-05-22 00:41:16,016][root][INFO] - 16-bits training: False 
+[2025-05-22 00:41:16,016][root][INFO] - Reading saved model from /home/tejas/DPR/downloads/checkpoint/retriever/single-adv-hn/nq/bert-base-encoder.cp
+[2025-05-22 00:41:39,132][root][INFO] - model_state_dict keys odict_keys(['model_dict', 'optimizer_dict', 'scheduler_dict', 'offset', 'epoch', 'encoder_params'])
+[2025-05-22 00:41:39,134][root][INFO] - CFG (after gpu  configuration):
+[2025-05-22 00:41:39,143][root][INFO] - encoder:
+  encoder_model_type: hf_bert
+  pretrained_model_cfg: bert-base-uncased
+  pretrained_file: null
+  projection_dim: 0
+  sequence_length: 256
+  dropout: 0.1
+  fix_ctx_encoder: false
+  pretrained: true
+datasets:
+  nq_test:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: /home/tejas/DPR/downloads/data/retriever/qas/nq-test.csv
+  nq_train:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.nq-train
+  nq_dev:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.nq-dev
+  trivia_test:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.trivia-test
+  trivia_train:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.trivia-train
+  trivia_dev:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.trivia-dev
+  webq_test:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.webq-test
+  curatedtrec_test:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.curatedtrec-test
+ctx_sources:
+  dpr_wiki:
+    _target_: dpr.data.retriever_data.CsvCtxSrc
+    file: /home/tejas/DPR/downloads/data/wikipedia_split/psgs_w100.tsv
+    id_prefix: 'wiki:'
+model_file: /home/tejas/DPR/downloads/checkpoint/retriever/single-adv-hn/nq/bert-base-encoder.cp
+qa_dataset: nq_test
+ctx_datatsets:
+- dpr_wiki
+encoded_ctx_files:
+- /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_*.pkl
+out_file: ${hydra:runtime.output_dir}/nq_test_results.json
+batch_size: 32
+indexer: flat
+match: string
+n_docs: 100
+validation_workers: 1
+do_lower_case: true
+local_rank: -1
+distributed_world_size: 1
+distributed_port: 0
+no_cuda: false
+n_gpu: 2
+device: cuda
+fp16: false
+special_tokens: []
+encoder_path: null
+rpc_retriever_cfg_file: null
+use_rpc_meta: false
+index_path: null
+validate_as_tables: false
+kilt_out_file: null
+indexers:
+  flat:
+    _target_: dpr.indexer.faiss_indexers.DenseFlatIndexer
+    buffer_size: 20000
+    gpu_id: 0
+
+[2025-05-22 00:42:05,188][dpr.models.hf_models][INFO] - Initializing HF BERT Encoder. cfg_name=bert-base-uncased
+[2025-05-22 00:42:12,135][dpr.models.hf_models][INFO] - Initializing HF BERT Encoder. cfg_name=bert-base-uncased
+[2025-05-22 00:42:16,065][root][INFO] - Loading saved model state ...
+[2025-05-22 00:42:16,160][root][INFO] - Selecting standard question encoder
+[2025-05-22 00:42:16,963][root][INFO] - Encoder vector_size=768
+[2025-05-22 00:42:16,964][root][INFO] - qa_dataset: nq_test
+[2025-05-22 00:42:16,966][dpr.data.biencoder_data][INFO] - get_dpr_files: Received source_name: /home/tejas/DPR/downloads/data/retriever/qas/nq-test.csv
+[2025-05-22 00:42:16,966][dpr.data.biencoder_data][INFO] - get_dpr_files: os.path.isabs(/home/tejas/DPR/downloads/data/retriever/qas/nq-test.csv) = True
+[2025-05-22 00:42:17,009][dpr.data.biencoder_data][INFO] - get_dpr_files: os.path.isfile(/home/tejas/DPR/downloads/data/retriever/qas/nq-test.csv) = True
+[2025-05-22 00:42:17,010][dpr.data.biencoder_data][INFO] - get_dpr_files: os.path.exists(/home/tejas/DPR/downloads/data/retriever/qas/nq-test.csv) = True
+[2025-05-22 00:42:17,010][dpr.data.biencoder_data][INFO] - get_dpr_files: Matched absolute file path: ['/home/tejas/DPR/downloads/data/retriever/qas/nq-test.csv']
+[2025-05-22 00:42:17,067][root][INFO] - questions len 3610
+[2025-05-22 00:42:17,067][root][INFO] - questions_text len 0
+[2025-05-22 00:42:17,068][root][INFO] - DenseFlatIndexer.__init__ called with buffer_size=20000, gpu_id=0
+[2025-05-22 00:42:17,068][root][INFO] - Local Index class <class 'dpr.indexer.faiss_indexers.DenseFlatIndexer'> 
+[2025-05-22 00:42:17,069][root][INFO] - DenseFlatIndexer.init_index called with vector_sz=768, self.gpu_id=0
+[2025-05-22 00:42:17,069][root][INFO] - Attempting to initialize FAISS index on GPU: 0
+[2025-05-22 00:42:23,756][root][INFO] - Successfully initialized FAISS IndexFlatIP on GPU: 0
+[2025-05-22 00:42:23,858][root][INFO] - Using special token None
+[2025-05-22 00:42:31,798][root][INFO] - Encoded queries 800
+[2025-05-22 00:42:36,498][root][INFO] - Encoded queries 1600
+[2025-05-22 00:42:41,236][root][INFO] - Encoded queries 2400
+[2025-05-22 00:42:45,951][root][INFO] - Encoded queries 3200
+[2025-05-22 00:42:48,416][root][INFO] - Total encoded queries tensor torch.Size([3610, 768])
+[2025-05-22 00:42:48,419][root][INFO] - ctx_sources: <class 'dpr.data.retriever_data.CsvCtxSrc'>
+[2025-05-22 00:42:48,419][root][INFO] - id_prefixes per dataset: ['wiki:']
+[2025-05-22 00:42:48,419][root][INFO] - ctx_files_patterns: ['/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_*.pkl']
+[2025-05-22 00:42:48,457][root][INFO] - Embeddings files id prefixes (final for indexing): ['wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:', 'wiki:']
+[2025-05-22 00:42:48,458][root][INFO] - Reading all passages data from files (final for indexing): ['/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_0.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_1.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_2.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_3.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_4.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_5.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_6.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_7.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_8.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_9.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_10.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_11.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_12.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_13.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_14.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_15.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_16.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_17.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_18.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_19.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_20.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_21.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_22.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_23.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_24.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_25.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_26.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_27.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_28.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_29.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_30.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_31.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_32.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_33.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_34.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_35.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_36.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_37.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_38.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_39.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_40.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_41.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_42.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_43.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_44.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_45.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_46.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_47.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_48.pkl', '/home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_49.pkl']
+[2025-05-22 00:42:48,458][root][INFO] - File 1/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_0.pkl
+[2025-05-22 00:42:48,458][root][INFO] - File 2/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_1.pkl
+[2025-05-22 00:42:48,459][root][INFO] - File 3/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_2.pkl
+[2025-05-22 00:42:48,459][root][INFO] - File 4/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_3.pkl
+[2025-05-22 00:42:48,459][root][INFO] - File 5/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_4.pkl
+[2025-05-22 00:42:48,459][root][INFO] - File 6/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_5.pkl
+[2025-05-22 00:42:48,459][root][INFO] - File 7/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_6.pkl
+[2025-05-22 00:42:48,459][root][INFO] - File 8/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_7.pkl
+[2025-05-22 00:42:48,460][root][INFO] - File 9/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_8.pkl
+[2025-05-22 00:42:48,460][root][INFO] - File 10/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_9.pkl
+[2025-05-22 00:42:48,460][root][INFO] - File 11/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_10.pkl
+[2025-05-22 00:42:48,460][root][INFO] - File 12/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_11.pkl
+[2025-05-22 00:42:48,461][root][INFO] - File 13/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_12.pkl
+[2025-05-22 00:42:48,461][root][INFO] - File 14/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_13.pkl
+[2025-05-22 00:42:48,461][root][INFO] - File 15/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_14.pkl
+[2025-05-22 00:42:48,461][root][INFO] - File 16/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_15.pkl
+[2025-05-22 00:42:48,461][root][INFO] - File 17/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_16.pkl
+[2025-05-22 00:42:48,461][root][INFO] - File 18/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_17.pkl
+[2025-05-22 00:42:48,462][root][INFO] - File 19/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_18.pkl
+[2025-05-22 00:42:48,462][root][INFO] - File 20/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_19.pkl
+[2025-05-22 00:42:48,462][root][INFO] - File 21/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_20.pkl
+[2025-05-22 00:42:48,462][root][INFO] - File 22/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_21.pkl
+[2025-05-22 00:42:48,462][root][INFO] - File 23/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_22.pkl
+[2025-05-22 00:42:48,463][root][INFO] - File 24/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_23.pkl
+[2025-05-22 00:42:48,463][root][INFO] - File 25/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_24.pkl
+[2025-05-22 00:42:48,463][root][INFO] - File 26/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_25.pkl
+[2025-05-22 00:42:48,463][root][INFO] - File 27/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_26.pkl
+[2025-05-22 00:42:48,463][root][INFO] - File 28/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_27.pkl
+[2025-05-22 00:42:48,463][root][INFO] - File 29/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_28.pkl
+[2025-05-22 00:42:48,464][root][INFO] - File 30/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_29.pkl
+[2025-05-22 00:42:48,464][root][INFO] - File 31/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_30.pkl
+[2025-05-22 00:42:48,464][root][INFO] - File 32/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_31.pkl
+[2025-05-22 00:42:48,464][root][INFO] - File 33/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_32.pkl
+[2025-05-22 00:42:48,464][root][INFO] - File 34/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_33.pkl
+[2025-05-22 00:42:48,464][root][INFO] - File 35/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_34.pkl
+[2025-05-22 00:42:48,465][root][INFO] - File 36/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_35.pkl
+[2025-05-22 00:42:48,465][root][INFO] - File 37/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_36.pkl
+[2025-05-22 00:42:48,465][root][INFO] - File 38/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_37.pkl
+[2025-05-22 00:42:48,465][root][INFO] - File 39/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_38.pkl
+[2025-05-22 00:42:48,465][root][INFO] - File 40/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_39.pkl
+[2025-05-22 00:42:48,466][root][INFO] - File 41/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_40.pkl
+[2025-05-22 00:42:48,466][root][INFO] - File 42/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_41.pkl
+[2025-05-22 00:42:48,466][root][INFO] - File 43/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_42.pkl
+[2025-05-22 00:42:48,466][root][INFO] - File 44/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_43.pkl
+[2025-05-22 00:42:48,466][root][INFO] - File 45/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_44.pkl
+[2025-05-22 00:42:48,466][root][INFO] - File 46/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_45.pkl
+[2025-05-22 00:42:48,466][root][INFO] - File 47/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_46.pkl
+[2025-05-22 00:42:48,467][root][INFO] - File 48/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_47.pkl
+[2025-05-22 00:42:48,467][root][INFO] - File 49/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_48.pkl
+[2025-05-22 00:42:48,467][root][INFO] - File 50/50 to be indexed: /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_49.pkl
+[2025-05-22 00:42:48,467][root][INFO] - Reading file /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_0.pkl
+[2025-05-22 00:42:57,963][root][INFO] - data indexed 20000
+[2025-05-22 00:42:57,963][root][INFO] - Total data indexed 20000
+[2025-05-22 00:42:58,098][root][INFO] - data indexed 40000
+[2025-05-22 00:42:58,098][root][INFO] - Total data indexed 40000
+[2025-05-22 00:42:58,243][root][INFO] - data indexed 60000
+[2025-05-22 00:42:58,243][root][INFO] - Total data indexed 60000
+[2025-05-22 00:42:58,390][root][INFO] - data indexed 80000
+[2025-05-22 00:42:58,391][root][INFO] - Total data indexed 80000
+[2025-05-22 00:42:58,804][root][INFO] - data indexed 100000
+[2025-05-22 00:42:58,804][root][INFO] - Total data indexed 100000
+[2025-05-22 00:42:58,959][root][INFO] - data indexed 120000
+[2025-05-22 00:42:58,960][root][INFO] - Total data indexed 120000
+[2025-05-22 00:42:59,122][root][INFO] - data indexed 140000
+[2025-05-22 00:42:59,122][root][INFO] - Total data indexed 140000
+[2025-05-22 00:42:59,279][root][INFO] - data indexed 160000
+[2025-05-22 00:42:59,279][root][INFO] - Total data indexed 160000
+[2025-05-22 00:42:59,445][root][INFO] - data indexed 180000
+[2025-05-22 00:42:59,445][root][INFO] - Total data indexed 180000
+[2025-05-22 00:42:59,622][root][INFO] - data indexed 200000
+[2025-05-22 00:42:59,622][root][INFO] - Total data indexed 200000
+[2025-05-22 00:42:59,771][root][INFO] - data indexed 220000
+[2025-05-22 00:42:59,772][root][INFO] - Total data indexed 220000
+[2025-05-22 00:43:00,169][root][INFO] - data indexed 240000
+[2025-05-22 00:43:00,169][root][INFO] - Total data indexed 240000
+[2025-05-22 00:43:00,301][root][INFO] - data indexed 260000
+[2025-05-22 00:43:00,302][root][INFO] - Total data indexed 260000
+[2025-05-22 00:43:00,443][root][INFO] - data indexed 280000
+[2025-05-22 00:43:00,443][root][INFO] - Total data indexed 280000
+[2025-05-22 00:43:00,591][root][INFO] - data indexed 300000
+[2025-05-22 00:43:00,591][root][INFO] - Total data indexed 300000
+[2025-05-22 00:43:00,743][root][INFO] - data indexed 320000
+[2025-05-22 00:43:00,744][root][INFO] - Total data indexed 320000
+[2025-05-22 00:43:00,913][root][INFO] - data indexed 340000
+[2025-05-22 00:43:00,913][root][INFO] - Total data indexed 340000
+[2025-05-22 00:43:01,072][root][INFO] - data indexed 360000
+[2025-05-22 00:43:01,072][root][INFO] - Total data indexed 360000
+[2025-05-22 00:43:01,262][root][INFO] - data indexed 380000
+[2025-05-22 00:43:01,262][root][INFO] - Total data indexed 380000
+[2025-05-22 00:43:01,461][root][INFO] - data indexed 400000
+[2025-05-22 00:43:01,462][root][INFO] - Total data indexed 400000
+[2025-05-22 00:43:01,902][root][INFO] - data indexed 420000
+[2025-05-22 00:43:01,903][root][INFO] - Total data indexed 420000
+[2025-05-22 00:43:01,907][root][INFO] - Reading file /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_1.pkl
+[2025-05-22 00:43:11,357][root][INFO] - data indexed 440000
+[2025-05-22 00:43:11,358][root][INFO] - Total data indexed 440000
+[2025-05-22 00:43:11,518][root][INFO] - data indexed 460000
+[2025-05-22 00:43:11,518][root][INFO] - Total data indexed 460000
+[2025-05-22 00:43:11,685][root][INFO] - data indexed 480000
+[2025-05-22 00:43:11,685][root][INFO] - Total data indexed 480000
+[2025-05-22 00:43:11,875][root][INFO] - data indexed 500000
+[2025-05-22 00:43:11,875][root][INFO] - Total data indexed 500000
+[2025-05-22 00:43:12,053][root][INFO] - data indexed 520000
+[2025-05-22 00:43:12,054][root][INFO] - Total data indexed 520000
+[2025-05-22 00:43:12,264][root][INFO] - data indexed 540000
+[2025-05-22 00:43:12,264][root][INFO] - Total data indexed 540000
+[2025-05-22 00:43:12,780][root][INFO] - data indexed 560000
+[2025-05-22 00:43:12,780][root][INFO] - Total data indexed 560000
+[2025-05-22 00:43:12,988][root][INFO] - data indexed 580000
+[2025-05-22 00:43:12,989][root][INFO] - Total data indexed 580000
+[2025-05-22 00:43:13,188][root][INFO] - data indexed 600000
+[2025-05-22 00:43:13,189][root][INFO] - Total data indexed 600000
+[2025-05-22 00:43:13,365][root][INFO] - data indexed 620000
+[2025-05-22 00:43:13,366][root][INFO] - Total data indexed 620000
+[2025-05-22 00:43:13,570][root][INFO] - data indexed 640000
+[2025-05-22 00:43:13,570][root][INFO] - Total data indexed 640000
+[2025-05-22 00:43:13,752][root][INFO] - data indexed 660000
+[2025-05-22 00:43:13,752][root][INFO] - Total data indexed 660000
+[2025-05-22 00:43:13,983][root][INFO] - data indexed 680000
+[2025-05-22 00:43:13,983][root][INFO] - Total data indexed 680000
+[2025-05-22 00:43:14,193][root][INFO] - data indexed 700000
+[2025-05-22 00:43:14,194][root][INFO] - Total data indexed 700000
+[2025-05-22 00:43:14,394][root][INFO] - data indexed 720000
+[2025-05-22 00:43:14,395][root][INFO] - Total data indexed 720000
+[2025-05-22 00:43:14,881][root][INFO] - data indexed 740000
+[2025-05-22 00:43:14,882][root][INFO] - Total data indexed 740000
+[2025-05-22 00:43:15,109][root][INFO] - data indexed 760000
+[2025-05-22 00:43:15,109][root][INFO] - Total data indexed 760000
+[2025-05-22 00:43:15,323][root][INFO] - data indexed 780000
+[2025-05-22 00:43:15,323][root][INFO] - Total data indexed 780000
+[2025-05-22 00:43:15,555][root][INFO] - data indexed 800000
+[2025-05-22 00:43:15,556][root][INFO] - Total data indexed 800000
+[2025-05-22 00:43:15,808][root][INFO] - data indexed 820000
+[2025-05-22 00:43:15,808][root][INFO] - Total data indexed 820000
+[2025-05-22 00:43:16,081][root][INFO] - data indexed 840000
+[2025-05-22 00:43:16,081][root][INFO] - Total data indexed 840000
+[2025-05-22 00:43:16,085][root][INFO] - Reading file /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_2.pkl
+[2025-05-22 00:43:26,819][root][INFO] - data indexed 860000
+[2025-05-22 00:43:26,819][root][INFO] - Total data indexed 860000
+[2025-05-22 00:43:27,108][root][INFO] - data indexed 880000
+[2025-05-22 00:43:27,109][root][INFO] - Total data indexed 880000
+[2025-05-22 00:43:27,677][root][INFO] - data indexed 900000
+[2025-05-22 00:43:27,677][root][INFO] - Total data indexed 900000
+[2025-05-22 00:43:27,950][root][INFO] - data indexed 920000
+[2025-05-22 00:43:27,950][root][INFO] - Total data indexed 920000
+[2025-05-22 00:43:28,184][root][INFO] - data indexed 940000
+[2025-05-22 00:43:28,184][root][INFO] - Total data indexed 940000
+[2025-05-22 00:43:28,475][root][INFO] - data indexed 960000
+[2025-05-22 00:43:28,476][root][INFO] - Total data indexed 960000
+[2025-05-22 00:43:28,692][root][INFO] - data indexed 980000
+[2025-05-22 00:43:28,693][root][INFO] - Total data indexed 980000
+[2025-05-22 00:43:28,935][root][INFO] - data indexed 1000000
+[2025-05-22 00:43:28,936][root][INFO] - Total data indexed 1000000
+[2025-05-22 00:43:29,204][root][INFO] - data indexed 1020000
+[2025-05-22 00:43:29,205][root][INFO] - Total data indexed 1020000
+[2025-05-22 00:43:29,474][root][INFO] - data indexed 1040000
+[2025-05-22 00:43:29,474][root][INFO] - Total data indexed 1040000
+[2025-05-22 00:43:29,721][root][INFO] - data indexed 1060000
+[2025-05-22 00:43:29,721][root][INFO] - Total data indexed 1060000
+[2025-05-22 00:43:30,296][root][INFO] - data indexed 1080000
+[2025-05-22 00:43:30,297][root][INFO] - Total data indexed 1080000
+[2025-05-22 00:43:30,568][root][INFO] - data indexed 1100000
+[2025-05-22 00:43:30,568][root][INFO] - Total data indexed 1100000
+[2025-05-22 00:43:30,851][root][INFO] - data indexed 1120000
+[2025-05-22 00:43:30,852][root][INFO] - Total data indexed 1120000
+[2025-05-22 00:43:31,142][root][INFO] - data indexed 1140000
+[2025-05-22 00:43:31,142][root][INFO] - Total data indexed 1140000
+[2025-05-22 00:43:31,451][root][INFO] - data indexed 1160000
+[2025-05-22 00:43:31,452][root][INFO] - Total data indexed 1160000
+[2025-05-22 00:43:31,736][root][INFO] - data indexed 1180000
+[2025-05-22 00:43:31,736][root][INFO] - Total data indexed 1180000
+[2025-05-22 00:43:32,062][root][INFO] - data indexed 1200000
+[2025-05-22 00:43:32,062][root][INFO] - Total data indexed 1200000
+[2025-05-22 00:43:32,330][root][INFO] - data indexed 1220000
+[2025-05-22 00:43:32,330][root][INFO] - Total data indexed 1220000
+[2025-05-22 00:43:32,979][root][INFO] - data indexed 1240000
+[2025-05-22 00:43:32,980][root][INFO] - Total data indexed 1240000
+[2025-05-22 00:43:33,292][root][INFO] - data indexed 1260000
+[2025-05-22 00:43:33,292][root][INFO] - Total data indexed 1260000
+[2025-05-22 00:43:33,296][root][INFO] - Reading file /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_3.pkl
+[2025-05-22 00:43:42,808][root][INFO] - data indexed 1280000
+[2025-05-22 00:43:42,808][root][INFO] - Total data indexed 1280000
+[2025-05-22 00:43:43,093][root][INFO] - data indexed 1300000
+[2025-05-22 00:43:43,094][root][INFO] - Total data indexed 1300000
+[2025-05-22 00:43:43,423][root][INFO] - data indexed 1320000
+[2025-05-22 00:43:43,423][root][INFO] - Total data indexed 1320000
+[2025-05-22 00:43:43,743][root][INFO] - data indexed 1340000
+[2025-05-22 00:43:43,744][root][INFO] - Total data indexed 1340000
+[2025-05-22 00:43:44,027][root][INFO] - data indexed 1360000
+[2025-05-22 00:43:44,027][root][INFO] - Total data indexed 1360000
+[2025-05-22 00:43:44,364][root][INFO] - data indexed 1380000
+[2025-05-22 00:43:44,365][root][INFO] - Total data indexed 1380000
+[2025-05-22 00:43:45,023][root][INFO] - data indexed 1400000
+[2025-05-22 00:43:45,023][root][INFO] - Total data indexed 1400000
+[2025-05-22 00:43:45,322][root][INFO] - data indexed 1420000
+[2025-05-22 00:43:45,322][root][INFO] - Total data indexed 1420000
+[2025-05-22 00:43:45,654][root][INFO] - data indexed 1440000
+[2025-05-22 00:43:45,655][root][INFO] - Total data indexed 1440000
+[2025-05-22 00:43:45,989][root][INFO] - data indexed 1460000
+[2025-05-22 00:43:45,990][root][INFO] - Total data indexed 1460000
+[2025-05-22 00:43:46,348][root][INFO] - data indexed 1480000
+[2025-05-22 00:43:46,349][root][INFO] - Total data indexed 1480000
+[2025-05-22 00:43:46,708][root][INFO] - data indexed 1500000
+[2025-05-22 00:43:46,708][root][INFO] - Total data indexed 1500000
+[2025-05-22 00:43:47,017][root][INFO] - data indexed 1520000
+[2025-05-22 00:43:47,017][root][INFO] - Total data indexed 1520000
+[2025-05-22 00:43:47,393][root][INFO] - data indexed 1540000
+[2025-05-22 00:43:47,393][root][INFO] - Total data indexed 1540000
+[2025-05-22 00:43:47,776][root][INFO] - data indexed 1560000
+[2025-05-22 00:43:47,776][root][INFO] - Total data indexed 1560000
+[2025-05-22 00:43:48,404][root][INFO] - data indexed 1580000
+[2025-05-22 00:43:48,405][root][INFO] - Total data indexed 1580000
+[2025-05-22 00:43:48,771][root][INFO] - data indexed 1600000
+[2025-05-22 00:43:48,772][root][INFO] - Total data indexed 1600000
+[2025-05-22 00:43:49,138][root][INFO] - data indexed 1620000
+[2025-05-22 00:43:49,138][root][INFO] - Total data indexed 1620000
+[2025-05-22 00:43:49,445][root][INFO] - data indexed 1640000
+[2025-05-22 00:43:49,446][root][INFO] - Total data indexed 1640000
+[2025-05-22 00:43:49,784][root][INFO] - data indexed 1660000
+[2025-05-22 00:43:49,784][root][INFO] - Total data indexed 1660000
+[2025-05-22 00:43:50,179][root][INFO] - data indexed 1680000
+[2025-05-22 00:43:50,180][root][INFO] - Total data indexed 1680000
+[2025-05-22 00:43:50,185][root][INFO] - Reading file /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_4.pkl
+[2025-05-22 00:44:01,294][root][INFO] - data indexed 1700000
+[2025-05-22 00:44:01,294][root][INFO] - Total data indexed 1700000
+[2025-05-22 00:44:01,703][root][INFO] - data indexed 1720000
+[2025-05-22 00:44:01,704][root][INFO] - Total data indexed 1720000
+[2025-05-22 00:44:02,458][root][INFO] - data indexed 1740000
+[2025-05-22 00:44:02,458][root][INFO] - Total data indexed 1740000
+[2025-05-22 00:44:02,819][root][INFO] - data indexed 1760000
+[2025-05-22 00:44:02,819][root][INFO] - Total data indexed 1760000
+[2025-05-22 00:44:03,215][root][INFO] - data indexed 1780000
+[2025-05-22 00:44:03,216][root][INFO] - Total data indexed 1780000
+[2025-05-22 00:44:03,650][root][INFO] - data indexed 1800000
+[2025-05-22 00:44:03,651][root][INFO] - Total data indexed 1800000
+[2025-05-22 00:44:04,062][root][INFO] - data indexed 1820000
+[2025-05-22 00:44:04,062][root][INFO] - Total data indexed 1820000
+[2025-05-22 00:44:04,472][root][INFO] - data indexed 1840000
+[2025-05-22 00:44:04,472][root][INFO] - Total data indexed 1840000
+[2025-05-22 00:44:04,841][root][INFO] - data indexed 1860000
+[2025-05-22 00:44:04,841][root][INFO] - Total data indexed 1860000
+[2025-05-22 00:44:05,562][root][INFO] - data indexed 1880000
+[2025-05-22 00:44:05,562][root][INFO] - Total data indexed 1880000
+[2025-05-22 00:44:05,934][root][INFO] - data indexed 1900000
+[2025-05-22 00:44:05,935][root][INFO] - Total data indexed 1900000
+[2025-05-22 00:44:06,309][root][INFO] - data indexed 1920000
+[2025-05-22 00:44:06,309][root][INFO] - Total data indexed 1920000
+[2025-05-22 00:44:06,756][root][INFO] - data indexed 1940000
+[2025-05-22 00:44:06,757][root][INFO] - Total data indexed 1940000
+[2025-05-22 00:44:07,122][root][INFO] - data indexed 1960000
+[2025-05-22 00:44:07,122][root][INFO] - Total data indexed 1960000
+[2025-05-22 00:44:07,487][root][INFO] - data indexed 1980000
+[2025-05-22 00:44:07,488][root][INFO] - Total data indexed 1980000
+[2025-05-22 00:44:07,938][root][INFO] - data indexed 2000000
+[2025-05-22 00:44:07,939][root][INFO] - Total data indexed 2000000
+[2025-05-22 00:44:08,382][root][INFO] - data indexed 2020000
+[2025-05-22 00:44:08,382][root][INFO] - Total data indexed 2020000
+[2025-05-22 00:44:09,148][root][INFO] - data indexed 2040000
+[2025-05-22 00:44:09,149][root][INFO] - Total data indexed 2040000
+[2025-05-22 00:44:09,583][root][INFO] - data indexed 2060000
+[2025-05-22 00:44:09,583][root][INFO] - Total data indexed 2060000
+[2025-05-22 00:44:09,993][root][INFO] - data indexed 2080000
+[2025-05-22 00:44:09,993][root][INFO] - Total data indexed 2080000
+[2025-05-22 00:44:10,477][root][INFO] - data indexed 2100000
+[2025-05-22 00:44:10,477][root][INFO] - Total data indexed 2100000
+[2025-05-22 00:44:10,483][root][INFO] - Reading file /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_5.pkl
+[2025-05-22 00:44:20,097][root][INFO] - data indexed 2120000
+[2025-05-22 00:44:20,098][root][INFO] - Total data indexed 2120000
+[2025-05-22 00:44:20,586][root][INFO] - data indexed 2140000
+[2025-05-22 00:44:20,587][root][INFO] - Total data indexed 2140000
+[2025-05-22 00:44:21,009][root][INFO] - data indexed 2160000
+[2025-05-22 00:44:21,010][root][INFO] - Total data indexed 2160000
+[2025-05-22 00:44:21,808][root][INFO] - data indexed 2180000
+[2025-05-22 00:44:21,809][root][INFO] - Total data indexed 2180000
+[2025-05-22 00:44:22,294][root][INFO] - data indexed 2200000
+[2025-05-22 00:44:22,295][root][INFO] - Total data indexed 2200000
+[2025-05-22 00:44:22,716][root][INFO] - data indexed 2220000
+[2025-05-22 00:44:22,716][root][INFO] - Total data indexed 2220000
+[2025-05-22 00:44:23,181][root][INFO] - data indexed 2240000
+[2025-05-22 00:44:23,182][root][INFO] - Total data indexed 2240000
+[2025-05-22 00:44:23,737][root][INFO] - data indexed 2260000
+[2025-05-22 00:44:23,738][root][INFO] - Total data indexed 2260000
+[2025-05-22 00:44:24,256][root][INFO] - data indexed 2280000
+[2025-05-22 00:44:24,256][root][INFO] - Total data indexed 2280000
+[2025-05-22 00:44:24,728][root][INFO] - data indexed 2300000
+[2025-05-22 00:44:24,729][root][INFO] - Total data indexed 2300000
+[2025-05-22 00:44:25,256][root][INFO] - data indexed 2320000
+[2025-05-22 00:44:25,257][root][INFO] - Total data indexed 2320000
+[2025-05-22 00:44:26,081][root][INFO] - data indexed 2340000
+[2025-05-22 00:44:26,081][root][INFO] - Total data indexed 2340000
+[2025-05-22 00:44:26,562][root][INFO] - data indexed 2360000
+[2025-05-22 00:44:26,562][root][INFO] - Total data indexed 2360000
+[2025-05-22 00:44:27,100][root][INFO] - data indexed 2380000
+[2025-05-22 00:44:27,100][root][INFO] - Total data indexed 2380000
+[2025-05-22 00:44:27,569][root][INFO] - data indexed 2400000
+[2025-05-22 00:44:27,569][root][INFO] - Total data indexed 2400000
+[2025-05-22 00:44:28,086][root][INFO] - data indexed 2420000
+[2025-05-22 00:44:28,086][root][INFO] - Total data indexed 2420000
+[2025-05-22 00:44:28,602][root][INFO] - data indexed 2440000
+[2025-05-22 00:44:28,603][root][INFO] - Total data indexed 2440000
+[2025-05-22 00:44:29,089][root][INFO] - data indexed 2460000
+[2025-05-22 00:44:29,089][root][INFO] - Total data indexed 2460000
+[2025-05-22 00:44:29,591][root][INFO] - data indexed 2480000
+[2025-05-22 00:44:29,591][root][INFO] - Total data indexed 2480000
+[2025-05-22 00:44:30,400][root][INFO] - data indexed 2500000
+[2025-05-22 00:44:30,400][root][INFO] - Total data indexed 2500000
+[2025-05-22 00:44:30,909][root][INFO] - data indexed 2520000
+[2025-05-22 00:44:30,909][root][INFO] - Total data indexed 2520000
+[2025-05-22 00:44:30,915][root][INFO] - Reading file /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_6.pkl
+[2025-05-22 00:44:41,971][root][INFO] - data indexed 2540000
+[2025-05-22 00:44:41,971][root][INFO] - Total data indexed 2540000
+[2025-05-22 00:44:42,444][root][INFO] - data indexed 2560000
+[2025-05-22 00:44:42,444][root][INFO] - Total data indexed 2560000
+[2025-05-22 00:44:42,909][root][INFO] - data indexed 2580000
+[2025-05-22 00:44:42,910][root][INFO] - Total data indexed 2580000
+[2025-05-22 00:44:43,404][root][INFO] - data indexed 2600000
+[2025-05-22 00:44:43,404][root][INFO] - Total data indexed 2600000
+[2025-05-22 00:44:43,865][root][INFO] - data indexed 2620000
+[2025-05-22 00:44:43,865][root][INFO] - Total data indexed 2620000
+[2025-05-22 00:44:44,421][root][INFO] - data indexed 2640000
+[2025-05-22 00:44:44,421][root][INFO] - Total data indexed 2640000
+[2025-05-22 00:44:44,915][root][INFO] - data indexed 2660000
+[2025-05-22 00:44:44,915][root][INFO] - Total data indexed 2660000
+[2025-05-22 00:44:45,795][root][INFO] - data indexed 2680000
+[2025-05-22 00:44:45,796][root][INFO] - Total data indexed 2680000
+[2025-05-22 00:44:46,326][root][INFO] - data indexed 2700000
+[2025-05-22 00:44:46,326][root][INFO] - Total data indexed 2700000
+[2025-05-22 00:44:46,844][root][INFO] - data indexed 2720000
+[2025-05-22 00:44:46,844][root][INFO] - Total data indexed 2720000
+[2025-05-22 00:44:47,383][root][INFO] - data indexed 2740000
+[2025-05-22 00:44:47,384][root][INFO] - Total data indexed 2740000
+[2025-05-22 00:44:47,857][root][INFO] - data indexed 2760000
+[2025-05-22 00:44:47,857][root][INFO] - Total data indexed 2760000
+[2025-05-22 00:44:48,332][root][INFO] - data indexed 2780000
+[2025-05-22 00:44:48,332][root][INFO] - Total data indexed 2780000
+[2025-05-22 00:44:48,861][root][INFO] - data indexed 2800000
+[2025-05-22 00:44:48,861][root][INFO] - Total data indexed 2800000
+[2025-05-22 00:44:49,361][root][INFO] - data indexed 2820000
+[2025-05-22 00:44:49,361][root][INFO] - Total data indexed 2820000
+[2025-05-22 00:44:50,266][root][INFO] - data indexed 2840000
+[2025-05-22 00:44:50,267][root][INFO] - Total data indexed 2840000
+[2025-05-22 00:44:50,836][root][INFO] - data indexed 2860000
+[2025-05-22 00:44:50,837][root][INFO] - Total data indexed 2860000
+[2025-05-22 00:44:51,382][root][INFO] - data indexed 2880000
+[2025-05-22 00:44:51,382][root][INFO] - Total data indexed 2880000
+[2025-05-22 00:44:51,946][root][INFO] - data indexed 2900000
+[2025-05-22 00:44:51,947][root][INFO] - Total data indexed 2900000
+[2025-05-22 00:44:52,554][root][INFO] - data indexed 2920000
+[2025-05-22 00:44:52,554][root][INFO] - Total data indexed 2920000
+[2025-05-22 00:44:53,211][root][INFO] - data indexed 2940000
+[2025-05-22 00:44:53,212][root][INFO] - Total data indexed 2940000
+[2025-05-22 00:44:53,216][root][INFO] - Reading file /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_7.pkl
+[2025-05-22 00:45:07,499][root][INFO] - data indexed 2960000
+[2025-05-22 00:45:07,500][root][INFO] - Total data indexed 2960000
+[2025-05-22 00:45:08,059][root][INFO] - data indexed 2980000
+[2025-05-22 00:45:08,060][root][INFO] - Total data indexed 2980000
+[2025-05-22 00:45:09,010][root][INFO] - data indexed 3000000
+[2025-05-22 00:45:09,011][root][INFO] - Total data indexed 3000000
+[2025-05-22 00:45:09,626][root][INFO] - data indexed 3020000
+[2025-05-22 00:45:09,626][root][INFO] - Total data indexed 3020000
+[2025-05-22 00:45:10,247][root][INFO] - data indexed 3040000
+[2025-05-22 00:45:10,248][root][INFO] - Total data indexed 3040000
+[2025-05-22 00:45:10,869][root][INFO] - data indexed 3060000
+[2025-05-22 00:45:10,869][root][INFO] - Total data indexed 3060000
+[2025-05-22 00:45:11,425][root][INFO] - data indexed 3080000
+[2025-05-22 00:45:11,425][root][INFO] - Total data indexed 3080000
+[2025-05-22 00:45:11,988][root][INFO] - data indexed 3100000
+[2025-05-22 00:45:11,988][root][INFO] - Total data indexed 3100000
+[2025-05-22 00:45:12,570][root][INFO] - data indexed 3120000
+[2025-05-22 00:45:12,570][root][INFO] - Total data indexed 3120000
+[2025-05-22 00:45:13,226][root][INFO] - data indexed 3140000
+[2025-05-22 00:45:13,227][root][INFO] - Total data indexed 3140000
+[2025-05-22 00:45:14,242][root][INFO] - data indexed 3160000
+[2025-05-22 00:45:14,242][root][INFO] - Total data indexed 3160000
+[2025-05-22 00:45:14,902][root][INFO] - data indexed 3180000
+[2025-05-22 00:45:14,902][root][INFO] - Total data indexed 3180000
+[2025-05-22 00:45:15,474][root][INFO] - data indexed 3200000
+[2025-05-22 00:45:15,474][root][INFO] - Total data indexed 3200000
+[2025-05-22 00:45:16,030][root][INFO] - data indexed 3220000
+[2025-05-22 00:45:16,031][root][INFO] - Total data indexed 3220000
+[2025-05-22 00:45:16,729][root][INFO] - data indexed 3240000
+[2025-05-22 00:45:16,730][root][INFO] - Total data indexed 3240000
+[2025-05-22 00:45:17,352][root][INFO] - data indexed 3260000
+[2025-05-22 00:45:17,352][root][INFO] - Total data indexed 3260000
+[2025-05-22 00:45:17,961][root][INFO] - data indexed 3280000
+[2025-05-22 00:45:17,961][root][INFO] - Total data indexed 3280000
+[2025-05-22 00:45:18,465][root][INFO] - data indexed 3300000
+[2025-05-22 00:45:18,466][root][INFO] - Total data indexed 3300000
+[2025-05-22 00:45:19,634][root][INFO] - data indexed 3320000
+[2025-05-22 00:45:19,634][root][INFO] - Total data indexed 3320000
+[2025-05-22 00:45:20,211][root][INFO] - data indexed 3340000
+[2025-05-22 00:45:20,211][root][INFO] - Total data indexed 3340000
+[2025-05-22 00:45:20,926][root][INFO] - data indexed 3360000
+[2025-05-22 00:45:20,926][root][INFO] - Total data indexed 3360000
+[2025-05-22 00:45:20,934][root][INFO] - Reading file /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_8.pkl
+[2025-05-22 00:45:30,233][root][INFO] - data indexed 3380000
+[2025-05-22 00:45:30,233][root][INFO] - Total data indexed 3380000
+[2025-05-22 00:45:30,817][root][INFO] - data indexed 3400000
+[2025-05-22 00:45:30,818][root][INFO] - Total data indexed 3400000
+[2025-05-22 00:45:31,397][root][INFO] - data indexed 3420000
+[2025-05-22 00:45:31,397][root][INFO] - Total data indexed 3420000
+[2025-05-22 00:45:31,968][root][INFO] - data indexed 3440000
+[2025-05-22 00:45:31,969][root][INFO] - Total data indexed 3440000
+[2025-05-22 00:45:32,607][root][INFO] - data indexed 3460000
+[2025-05-22 00:45:32,607][root][INFO] - Total data indexed 3460000
+[2025-05-22 00:45:33,658][root][INFO] - data indexed 3480000
+[2025-05-22 00:45:33,658][root][INFO] - Total data indexed 3480000
+[2025-05-22 00:45:34,305][root][INFO] - data indexed 3500000
+[2025-05-22 00:45:34,306][root][INFO] - Total data indexed 3500000
+[2025-05-22 00:45:34,913][root][INFO] - data indexed 3520000
+[2025-05-22 00:45:34,913][root][INFO] - Total data indexed 3520000
+[2025-05-22 00:45:35,555][root][INFO] - data indexed 3540000
+[2025-05-22 00:45:35,555][root][INFO] - Total data indexed 3540000
+[2025-05-22 00:45:36,208][root][INFO] - data indexed 3560000
+[2025-05-22 00:45:36,208][root][INFO] - Total data indexed 3560000
+[2025-05-22 00:45:36,821][root][INFO] - data indexed 3580000
+[2025-05-22 00:45:36,821][root][INFO] - Total data indexed 3580000
+[2025-05-22 00:45:37,488][root][INFO] - data indexed 3600000
+[2025-05-22 00:45:37,489][root][INFO] - Total data indexed 3600000
+[2025-05-22 00:45:38,213][root][INFO] - data indexed 3620000
+[2025-05-22 00:45:38,213][root][INFO] - Total data indexed 3620000
+[2025-05-22 00:45:39,290][root][INFO] - data indexed 3640000
+[2025-05-22 00:45:39,291][root][INFO] - Total data indexed 3640000
+[2025-05-22 00:45:40,579][root][INFO] - data indexed 3660000
+[2025-05-22 00:45:40,579][root][INFO] - Total data indexed 3660000
+[2025-05-22 00:45:41,210][root][INFO] - data indexed 3680000
+[2025-05-22 00:45:41,210][root][INFO] - Total data indexed 3680000

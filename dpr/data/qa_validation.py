@@ -31,6 +31,13 @@ QATableMatchStats = collections.namedtuple(
     "QAMatchStats", ["top_k_chunk_hits", "top_k_table_hits", "questions_doc_hits"]
 )
 
+# Global variable to store all_docs in worker processes
+WORKER_ALL_DOCS = None
+
+def init_worker_all_docs(all_docs_data):
+    """Initializer for worker processes to set the global WORKER_ALL_DOCS."""
+    global WORKER_ALL_DOCS
+    WORKER_ALL_DOCS = all_docs_data
 
 def calculate_matches(
     all_docs: Dict[object, Tuple[str, str]],
@@ -40,32 +47,46 @@ def calculate_matches(
     match_type: str,
 ) -> QAMatchStats:
     """
-    Evaluates answers presence in the set of documents. This function is supposed to be used with a large collection of
-    documents and results. It internally forks multiple sub-processes for evaluation and then merges results
-    :param all_docs: dictionary of the entire documents database. doc_id -> (doc_text, title)
-    :param answers: list of answers's list. One list per question
-    :param closest_docs: document ids of the top results along with their scores
-    :param workers_num: amount of parallel threads to process data
-    :param match_type: type of answer matching. Refer to has_answer code for available options
+    Validate passages retrieval results by calculating top k hits for a given set of answers and retrieved documents
+    Args:
+        all_docs: a dictionary of {id S-> (text, title)}
+        answers: a list of answers, each answer is a list of strings
+        closest_docs: a list of tuples, each tuple contains list of ids and list of scores
+        workers_num: amount of parallel processes to validate results
+        match_type: type of answer matching. Refer to has_answer docs
     :return: matching information tuple.
     top_k_hits - a list where the index is the amount of top documents retrieved and the value is the total amount of
     valid matches across an entire dataset.
     questions_doc_hits - more detailed info with answer matches for every question and every retrieved document
     """
     logger.info("all_docs size %d", len(all_docs))
-    global dpr_all_documents
-    dpr_all_documents = all_docs
-    logger.info("dpr_all_documents size %d", len(dpr_all_documents))
+    # global dpr_all_documents # Removed global
+    # dpr_all_documents = all_docs # Removed assignment to global
+    # logger.info("dpr_all_documents size %d", len(dpr_all_documents)) # Using len(all_docs) directly or removing
 
     tok_opts = {}
     tokenizer = SimpleTokenizer(**tok_opts)
 
-    processes = ProcessPool(processes=workers_num)
+    # Initialize WORKER_ALL_DOCS for the main process too, in case workers_num is 0 or 1
+    # though typically workers_num > 1 for multiprocessing.
+    global WORKER_ALL_DOCS
+    WORKER_ALL_DOCS = all_docs
+
+    processes = ProcessPool(processes=workers_num, initializer=init_worker_all_docs, initargs=(all_docs,))
     logger.info("Matching answers in top docs...")
+    # Pass all_docs as the first argument to check_answer
+    # No longer pass all_docs via partial, it will be accessed via global WORKER_ALL_DOCS
     get_score_partial = partial(check_answer, match_type=match_type, tokenizer=tokenizer)
 
+    logger.info("all_docs size %d", len(all_docs))
     questions_answers_docs = zip(answers, closest_docs)
-    scores = processes.map(get_score_partial, questions_answers_docs)
+    # Convert to list for len() call for logging, but pass the original iterator to map
+    questions_answers_docs_list_for_logging = list(questions_answers_docs)
+    logger.info("questions_answers_docs size %d", len(questions_answers_docs_list_for_logging))
+    # Re-create the zip object (iterator) to be passed to processes.map
+    # as the previous list conversion would have consumed it.
+    questions_answers_docs_iterator = zip(answers, closest_docs)
+    scores = processes.map(get_score_partial, questions_answers_docs_iterator)
 
     logger.info("Per question validation results len=%d", len(scores))
 
@@ -120,11 +141,27 @@ def check_answer(questions_answers_docs, tokenizer, match_type) -> List[bool]:
     """Search through all the top docs to see if they have any of the answers."""
     answers, (doc_ids, doc_scores) = questions_answers_docs
 
-    global dpr_all_documents
+    # global dpr_all_documents # Removed global
+    # Use the global WORKER_ALL_DOCS initialized in each worker
+    global WORKER_ALL_DOCS
+    if WORKER_ALL_DOCS is None:
+        # This should ideally not happen if initializer worked
+        logger.error("WORKER_ALL_DOCS is not initialized in worker process!")
+        # Fallback or raise error, for now, let's try to make it obvious if it fails
+        # Or, consider if the main process all_docs could be used, but that defeats the purpose.
+        # For safety, return empty hits or raise an exception.
+        # For this example, returning all False.
+        return [False] * len(doc_ids)
+
     hits = []
 
     for i, doc_id in enumerate(doc_ids):
-        doc = dpr_all_documents[doc_id]
+        doc = WORKER_ALL_DOCS.get(doc_id) # Use .get() for safety
+        if doc is None:
+            logger.warning(f"Document ID {doc_id} not found in WORKER_ALL_DOCS.")
+            hits.append(False)
+            continue
+
         text = doc[0]
 
         answer_found = False

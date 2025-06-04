@@ -1,0 +1,36 @@
+defaults:
+  - encoder: hf_bert
+  - datasets: retriever_default
+  - ctx_sources: default_sources
+
+model_file: /home/tejas/DPR/downloads/checkpoint/retriever/single-adv-hn/nq/bert-base-encoder.cp
+qa_dataset: nq_test
+ctx_datatsets: [dpr_wiki]
+encoded_ctx_files:
+- /home/tejas/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_*.pkl
+out_file: ${hydra:runtime.output_dir}/nq_test_results.json
+batch_size: 32
+indexer: flat
+match: string
+n_docs: 100
+validation_workers: 1
+do_lower_case: true
+local_rank: -1
+distributed_world_size: 1
+distributed_port: 0
+no_cuda: false
+n_gpu: 1
+device: cuda
+fp16: false
+special_tokens: []
+encoder_path: null
+rpc_retriever_cfg_file: null
+use_rpc_meta: false
+index_path: null
+validate_as_tables: False
+kilt_out_file: null
+indexers:
+  flat:
+    _target_: dpr.indexer.faiss_indexers.DenseFlatIndexer
+    buffer_size: 20000
+    gpu_id: 0
