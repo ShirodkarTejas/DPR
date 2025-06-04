@@ -17,8 +17,21 @@ BiEncoderPassage = collections.namedtuple("BiEncoderPassage", ["text", "title"])
 
 
 def get_dpr_files(source_name) -> List[str]:
-    if os.path.exists(source_name) or glob.glob(source_name):
-        return glob.glob(source_name)
+    logger.info(f"get_dpr_files: Received source_name: {source_name}")
+    logger.info(f"get_dpr_files: os.path.isabs({source_name}) = {os.path.isabs(source_name)}")
+    logger.info(f"get_dpr_files: os.path.isfile({source_name}) = {os.path.isfile(source_name)}")
+    logger.info(f"get_dpr_files: os.path.exists({source_name}) = {os.path.exists(source_name)}")
+    # If source_name is an absolute path to an existing file, return it directly in a list.
+    if os.path.isabs(source_name) and os.path.isfile(source_name):
+        logger.info(f"get_dpr_files: Matched absolute file path: {[source_name]}")
+        return [source_name]
+    # If it's a glob pattern that yields results or an existing directory/file (handled by glob)
+    # This also covers relative paths that exist.
+    # Use os.path.exists for non-glob single files/dirs, and glob.glob for patterns or existing items.
+    existing_glob_or_file = glob.glob(source_name)
+    if os.path.exists(source_name) or existing_glob_or_file:
+        # If existing_glob_or_file is not empty, use it, otherwise, if os.path.exists was true for a single file, glob it.
+        return existing_glob_or_file if existing_glob_or_file else glob.glob(source_name)
     else:
         # try to use data downloader
         from dpr.data.download_data import download
@@ -172,7 +185,7 @@ class JsonlQADataset(JsonQADataset):
 
 
 def normalize_passage(ctx_text: str):
-    ctx_text = ctx_text.replace("\n", " ").replace("’", "'")
+    ctx_text = ctx_text.replace("\n", " ").replace("'","'")
     if ctx_text.startswith('"'):
         ctx_text = ctx_text[1:]
     if ctx_text.endswith('"'):

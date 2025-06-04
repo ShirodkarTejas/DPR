@@ -15,6 +15,8 @@ import logging
 import pickle
 import time
 import zlib
+import re
+import os.path
 from typing import List, Tuple, Dict, Iterator
 
 import hydra
@@ -72,13 +74,13 @@ def generate_question_vectors(
                 batch_tensors = [tensorizer.text_to_tensor(q) for q in batch_questions]
 
             # TODO: this only works for Wav2vec pipeline but will crash the regular text pipeline
-            max_vector_len = max(q_t.size(1) for q_t in batch_tensors)
-            min_vector_len = min(q_t.size(1) for q_t in batch_tensors)
+            max_vector_len = max(q_t.size(0) for q_t in batch_tensors)
+            min_vector_len = min(q_t.size(0) for q_t in batch_tensors)
 
             if max_vector_len != min_vector_len:
                 # TODO: _pad_to_len move to utils
                 from dpr.models.reader import _pad_to_len
-                batch_tensors = [_pad_to_len(q.squeeze(0), 0, max_vector_len) for q in batch_tensors]
+                batch_tensors = [_pad_to_len(q, 0, max_vector_len) for q in batch_tensors]
 
             q_ids_batch = torch.stack(batch_tensors, dim=0).cuda()
             q_seg_batch = torch.zeros_like(q_ids_batch).cuda()
@@ -586,8 +588,35 @@ def main(cfg: DictConfig):
             pattern_id_prefix = id_prefixes[i]
             input_paths.extend(pattern_files)
             path_id_prefixes.extend([pattern_id_prefix] * len(pattern_files))
-        logger.info("Embeddings files id prefixes: %s", path_id_prefixes)
-        logger.info("Reading all passages data from files: %s", input_paths)
+        
+        # Sort input_paths and ensure path_id_prefixes remains aligned
+        if input_paths: 
+            # Define a natural sort key function
+            def natural_sort_key(s):
+                # s is the file_path string
+                filename = os.path.basename(s)
+                return [int(text) if text.isdigit() else text.lower()
+                        for text in re.split('([0-9]+)', filename)]
+
+            # Create pairs of (file_path, corresponding_prefix)
+            zipped_files_and_prefixes = list(zip(input_paths, path_id_prefixes)) 
+            # Sort these pairs based on the natural sort key of the file_path
+            zipped_files_and_prefixes.sort(key=lambda x: natural_sort_key(x[0]))
+            # Unzip back into input_paths and path_id_prefixes
+            input_paths, path_id_prefixes = [list(t) for t in zip(*zipped_files_and_prefixes)] if zipped_files_and_prefixes else ([], [])
+        
+        # Add slicing logic
+        num_files_to_process = 3 # Reduced from 20
+        if len(input_paths) > num_files_to_process:
+            logger.info(f"Limiting processing from {len(input_paths)} to first {num_files_to_process} embedding files based on sorted order.")
+            input_paths = input_paths[:num_files_to_process]
+            path_id_prefixes = path_id_prefixes[:num_files_to_process] # Slice the aligned prefixes as well
+
+        logger.info("Embeddings files id prefixes (final for indexing): %s", path_id_prefixes) 
+        logger.info("Reading all passages data from files (final for indexing): %s", input_paths) 
+        # Add more detailed logging for the exact files being processed
+        for f_idx, f_path in enumerate(input_paths):
+            logger.info(f"File {f_idx + 1}/{len(input_paths)} to be indexed: {f_path}")
         retriever.index_encoded_data(input_paths, index_buffer_sz, path_id_prefixes=path_id_prefixes)
         if index_path:
             retriever.index.serialize(index_path)
@@ -613,7 +642,9 @@ def main(cfg: DictConfig):
                 cfg.rpc_meta_compressed,
             )
     else:
+        logger.info("Attempting to load all passage texts via get_all_passages...")
         all_passages = get_all_passages(ctx_sources)
+        logger.info(f"Loaded {len(all_passages)} items into all_passages dict.")
         if cfg.validate_as_tables:
 
             questions_doc_hits = validate_tables(

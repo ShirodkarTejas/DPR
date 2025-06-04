@@ -1,0 +1,69 @@
+encoder:
+  encoder_model_type: hf_bert
+  pretrained_model_cfg: bert-base-uncased
+  pretrained_file: null
+  projection_dim: 0
+  sequence_length: 256
+  dropout: 0.1
+  fix_ctx_encoder: false
+  pretrained: true
+datasets:
+  nq_test:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: G:/learning/iisc dl/capstone/DPR/downloads/data/retriever/qas/nq-test.csv
+  nq_train:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.nq-train
+  nq_dev:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.nq-dev
+  trivia_test:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.trivia-test
+  trivia_train:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.trivia-train
+  trivia_dev:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.trivia-dev
+  webq_test:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.webq-test
+  curatedtrec_test:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.curatedtrec-test
+ctx_sources:
+  dpr_wiki:
+    _target_: dpr.data.retriever_data.CsvCtxSrc
+    file: G:/learning/iisc dl/capstone/DPR/downloads/data/wikipedia_split/psgs_w100.tsv
+    id_prefix: 'wiki:'
+model_file: G:\learning\iisc dl\capstone\DPR\downloads\checkpoint\retriever\single-adv-hn\nq\bert-base-encoder.cp
+qa_dataset: nq_test
+ctx_datatsets:
+- dpr_wiki
+encoded_ctx_files:
+- G:/learning/iisc dl/capstone/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_*.pkl
+out_file: outputs/nq_test_results.json
+batch_size: 32
+indexer: flat
+match: string
+n_docs: 100
+validation_workers: 16
+do_lower_case: true
+local_rank: -1
+distributed_world_size: 1
+distributed_port: 0
+no_cuda: false
+n_gpu: 1
+device: cuda
+fp16: false
+special_tokens: []
+encoder_path: null
+rpc_retriever_cfg_file: null
+use_rpc_meta: false
+index_path: null
+indexers:
+  flat:
+    _target_: dpr.indexer.faiss_indexers.DenseFlatIndexer
+    buffer_size: 50000
+    gpu_id: 1

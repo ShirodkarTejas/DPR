@@ -1,0 +1,175 @@
+[2025-05-20 19:07:28,205][root][INFO] - CFG's local_rank=-1
+[2025-05-20 19:07:28,205][root][INFO] - Env WORLD_SIZE=None
+[2025-05-20 19:07:28,206][root][INFO] - Initialized host t-sh as d.rank -1 on device=cuda, n_gpu=2, world size=1
+[2025-05-20 19:07:28,207][root][INFO] - 16-bits training: False 
+[2025-05-20 19:07:28,207][root][INFO] - Reading saved model from G:\learning\iisc dl\capstone\DPR\downloads\checkpoint\retriever\single-adv-hn\nq\bert-base-encoder.cp
+[2025-05-20 19:07:30,029][root][INFO] - model_state_dict keys odict_keys(['model_dict', 'optimizer_dict', 'scheduler_dict', 'offset', 'epoch', 'encoder_params'])
+[2025-05-20 19:07:30,031][root][INFO] - CFG (after gpu  configuration):
+[2025-05-20 19:07:30,044][root][INFO] - encoder:
+  encoder_model_type: hf_bert
+  pretrained_model_cfg: bert-base-uncased
+  pretrained_file: null
+  projection_dim: 0
+  sequence_length: 256
+  dropout: 0.1
+  fix_ctx_encoder: false
+  pretrained: true
+datasets:
+  nq_test:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: G:/learning/iisc dl/capstone/DPR/downloads/data/retriever/qas/nq-test.csv
+  nq_train:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.nq-train
+  nq_dev:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.nq-dev
+  trivia_test:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.trivia-test
+  trivia_train:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.trivia-train
+  trivia_dev:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.trivia-dev
+  webq_test:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.webq-test
+  curatedtrec_test:
+    _target_: dpr.data.retriever_data.CsvQASrc
+    file: data.retriever.qas.curatedtrec-test
+ctx_sources:
+  dpr_wiki:
+    _target_: dpr.data.retriever_data.CsvCtxSrc
+    file: G:/learning/iisc dl/capstone/DPR/downloads/data/wikipedia_split/psgs_w100.tsv
+    id_prefix: 'wiki:'
+model_file: G:\learning\iisc dl\capstone\DPR\downloads\checkpoint\retriever\single-adv-hn\nq\bert-base-encoder.cp
+qa_dataset: nq_test
+ctx_datatsets:
+- dpr_wiki
+encoded_ctx_files:
+- G:/learning/iisc dl/capstone/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_*.pkl
+out_file: outputs/nq_test_results.json
+batch_size: 32
+indexer: flat
+match: string
+n_docs: 100
+validation_workers: 16
+do_lower_case: true
+local_rank: -1
+distributed_world_size: 1
+distributed_port: 0
+no_cuda: false
+n_gpu: 2
+device: cuda
+fp16: false
+special_tokens: []
+encoder_path: null
+rpc_retriever_cfg_file: null
+use_rpc_meta: false
+index_path: null
+indexers:
+  flat:
+    _target_: dpr.indexer.faiss_indexers.DenseFlatIndexer
+    buffer_size: 50000
+    gpu_id: 1
+
+[2025-05-20 19:07:31,412][dpr.models.hf_models][INFO] - Initializing HF BERT Encoder. cfg_name=bert-base-uncased
+[2025-05-20 19:07:32,918][dpr.models.hf_models][INFO] - Initializing HF BERT Encoder. cfg_name=bert-base-uncased
+[2025-05-20 19:07:34,683][root][INFO] - Loading saved model state ...
+[2025-05-20 19:07:34,778][root][INFO] - Selecting standard question encoder
+[2025-05-20 19:07:35,038][root][INFO] - Encoder vector_size=768
+[2025-05-20 19:07:35,038][root][INFO] - qa_dataset: nq_test
+[2025-05-20 19:07:35,039][dpr.data.biencoder_data][INFO] - get_dpr_files: Received source_name: G:/learning/iisc dl/capstone/DPR/downloads/data/retriever/qas/nq-test.csv
+[2025-05-20 19:07:35,040][dpr.data.biencoder_data][INFO] - get_dpr_files: os.path.isabs(G:/learning/iisc dl/capstone/DPR/downloads/data/retriever/qas/nq-test.csv) = True
+[2025-05-20 19:07:35,040][dpr.data.biencoder_data][INFO] - get_dpr_files: os.path.isfile(G:/learning/iisc dl/capstone/DPR/downloads/data/retriever/qas/nq-test.csv) = True
+[2025-05-20 19:07:35,041][dpr.data.biencoder_data][INFO] - get_dpr_files: os.path.exists(G:/learning/iisc dl/capstone/DPR/downloads/data/retriever/qas/nq-test.csv) = True
+[2025-05-20 19:07:35,041][dpr.data.biencoder_data][INFO] - get_dpr_files: Matched absolute file path: ['G:/learning/iisc dl/capstone/DPR/downloads/data/retriever/qas/nq-test.csv']
+[2025-05-20 19:07:35,241][root][INFO] - questions len 3610
+[2025-05-20 19:07:35,242][root][INFO] - questions_text len 0
+[2025-05-20 19:07:35,243][root][INFO] - DenseFlatIndexer.__init__ called with buffer_size=50000, gpu_id=1
+[2025-05-20 19:07:35,243][root][INFO] - Local Index class <class 'dpr.indexer.faiss_indexers.DenseFlatIndexer'> 
+[2025-05-20 19:07:35,243][root][INFO] - DenseFlatIndexer.init_index called with vector_sz=768, self.gpu_id=1
+[2025-05-20 19:07:35,243][root][INFO] - Attempting to initialize FAISS index on GPU: 1
+[2025-05-20 19:07:35,243][root][ERROR] - Failed to initialize FAISS on GPU: 1. Error: module 'faiss' has no attribute 'StandardGpuResources'
+[2025-05-20 19:07:35,244][root][INFO] - Falling back to CPU for FAISS index.
+[2025-05-20 19:07:35,244][root][INFO] - Using special token None
+[2025-05-20 19:07:39,257][root][INFO] - Encoded queries 800
+[2025-05-20 19:07:42,856][root][INFO] - Encoded queries 1600
+[2025-05-20 19:07:46,462][root][INFO] - Encoded queries 2400
+[2025-05-20 19:07:50,130][root][INFO] - Encoded queries 3200
+[2025-05-20 19:07:51,987][root][INFO] - Total encoded queries tensor torch.Size([3610, 768])
+[2025-05-20 19:07:51,991][root][INFO] - ctx_sources: <class 'dpr.data.retriever_data.CsvCtxSrc'>
+[2025-05-20 19:07:51,991][root][INFO] - id_prefixes per dataset: ['wiki:']
+[2025-05-20 19:07:51,992][root][INFO] - ctx_files_patterns: ['G:/learning/iisc dl/capstone/DPR/downloads/data/retriever_results/nq/single-adv-hn/wikipedia_passages_*.pkl']
+[2025-05-20 19:07:51,993][root][INFO] - Limiting processing from 50 to first 3 embedding files based on sorted order.
+[2025-05-20 19:07:51,994][root][INFO] - Embeddings files id prefixes (final for indexing): ['wiki:', 'wiki:', 'wiki:']
+[2025-05-20 19:07:51,994][root][INFO] - Reading all passages data from files (final for indexing): ['G:/learning/iisc dl/capstone/DPR/downloads/data/retriever_results/nq/single-adv-hn\\wikipedia_passages_0.pkl', 'G:/learning/iisc dl/capstone/DPR/downloads/data/retriever_results/nq/single-adv-hn\\wikipedia_passages_1.pkl', 'G:/learning/iisc dl/capstone/DPR/downloads/data/retriever_results/nq/single-adv-hn\\wikipedia_passages_2.pkl']
+[2025-05-20 19:07:51,995][root][INFO] - File 1/3 to be indexed: G:/learning/iisc dl/capstone/DPR/downloads/data/retriever_results/nq/single-adv-hn\wikipedia_passages_0.pkl
+[2025-05-20 19:07:51,995][root][INFO] - File 2/3 to be indexed: G:/learning/iisc dl/capstone/DPR/downloads/data/retriever_results/nq/single-adv-hn\wikipedia_passages_1.pkl
+[2025-05-20 19:07:51,996][root][INFO] - File 3/3 to be indexed: G:/learning/iisc dl/capstone/DPR/downloads/data/retriever_results/nq/single-adv-hn\wikipedia_passages_2.pkl
+[2025-05-20 19:07:51,996][root][INFO] - Reading file G:/learning/iisc dl/capstone/DPR/downloads/data/retriever_results/nq/single-adv-hn\wikipedia_passages_0.pkl
+[2025-05-20 19:07:55,359][root][INFO] - data indexed 50000
+[2025-05-20 19:07:55,360][root][INFO] - Total data indexed 50000
+[2025-05-20 19:07:55,959][root][INFO] - data indexed 100000
+[2025-05-20 19:07:55,960][root][INFO] - Total data indexed 100000
+[2025-05-20 19:07:56,328][root][INFO] - data indexed 150000
+[2025-05-20 19:07:56,328][root][INFO] - Total data indexed 150000
+[2025-05-20 19:07:56,895][root][INFO] - data indexed 200000
+[2025-05-20 19:07:56,895][root][INFO] - Total data indexed 200000
+[2025-05-20 19:07:57,540][root][INFO] - data indexed 250000
+[2025-05-20 19:07:57,540][root][INFO] - Total data indexed 250000
+[2025-05-20 19:07:57,798][root][INFO] - data indexed 300000
+[2025-05-20 19:07:57,798][root][INFO] - Total data indexed 300000
+[2025-05-20 19:07:58,534][root][INFO] - data indexed 350000
+[2025-05-20 19:07:58,535][root][INFO] - Total data indexed 350000
+[2025-05-20 19:07:58,859][root][INFO] - data indexed 400000
+[2025-05-20 19:07:58,862][root][INFO] - Total data indexed 400000
+[2025-05-20 19:07:58,905][root][INFO] - Reading file G:/learning/iisc dl/capstone/DPR/downloads/data/retriever_results/nq/single-adv-hn\wikipedia_passages_1.pkl
+[2025-05-20 19:08:02,618][root][INFO] - data indexed 450000
+[2025-05-20 19:08:02,619][root][INFO] - Total data indexed 450000
+[2025-05-20 19:08:03,121][root][INFO] - data indexed 500000
+[2025-05-20 19:08:03,122][root][INFO] - Total data indexed 500000
+[2025-05-20 19:08:04,072][root][INFO] - data indexed 550000
+[2025-05-20 19:08:04,073][root][INFO] - Total data indexed 550000
+[2025-05-20 19:08:04,333][root][INFO] - data indexed 600000
+[2025-05-20 19:08:04,333][root][INFO] - Total data indexed 600000
+[2025-05-20 19:08:04,819][root][INFO] - data indexed 650000
+[2025-05-20 19:08:04,820][root][INFO] - Total data indexed 650000
+[2025-05-20 19:08:05,072][root][INFO] - data indexed 700000
+[2025-05-20 19:08:05,072][root][INFO] - Total data indexed 700000
+[2025-05-20 19:08:05,685][root][INFO] - data indexed 750000
+[2025-05-20 19:08:05,686][root][INFO] - Total data indexed 750000
+[2025-05-20 19:08:06,701][root][INFO] - data indexed 800000
+[2025-05-20 19:08:06,702][root][INFO] - Total data indexed 800000
+[2025-05-20 19:08:06,747][root][INFO] - Reading file G:/learning/iisc dl/capstone/DPR/downloads/data/retriever_results/nq/single-adv-hn\wikipedia_passages_2.pkl
+[2025-05-20 19:08:10,563][root][INFO] - data indexed 850000
+[2025-05-20 19:08:10,564][root][INFO] - Total data indexed 850000
+[2025-05-20 19:08:10,854][root][INFO] - data indexed 900000
+[2025-05-20 19:08:10,855][root][INFO] - Total data indexed 900000
+[2025-05-20 19:08:11,315][root][INFO] - data indexed 950000
+[2025-05-20 19:08:11,315][root][INFO] - Total data indexed 950000
+[2025-05-20 19:08:11,549][root][INFO] - data indexed 1000000
+[2025-05-20 19:08:11,550][root][INFO] - Total data indexed 1000000
+[2025-05-20 19:08:11,912][root][INFO] - data indexed 1050000
+[2025-05-20 19:08:11,913][root][INFO] - Total data indexed 1050000
+[2025-05-20 19:08:12,417][root][INFO] - data indexed 1100000
+[2025-05-20 19:08:12,418][root][INFO] - Total data indexed 1100000
+[2025-05-20 19:08:14,273][root][INFO] - data indexed 1150000
+[2025-05-20 19:08:14,274][root][INFO] - Total data indexed 1150000
+[2025-05-20 19:08:14,610][root][INFO] - data indexed 1200000
+[2025-05-20 19:08:14,611][root][INFO] - Total data indexed 1200000
+[2025-05-20 19:08:15,242][root][INFO] - data indexed 1250000
+[2025-05-20 19:08:15,243][root][INFO] - Total data indexed 1250000
+[2025-05-20 19:08:15,729][root][INFO] - data indexed 1260921
+[2025-05-20 19:08:15,730][root][INFO] - Total data indexed 1260921
+[2025-05-20 19:08:15,732][root][INFO] - Data indexing completed.
+[2025-05-20 19:08:46,219][root][INFO] - index search time: 30.476447 sec.
+[2025-05-20 19:08:46,220][root][INFO] - Attempting to load all passage texts via get_all_passages...
+[2025-05-20 19:08:46,220][dpr.data.biencoder_data][INFO] - get_dpr_files: Received source_name: G:/learning/iisc dl/capstone/DPR/downloads/data/wikipedia_split/psgs_w100.tsv
+[2025-05-20 19:08:46,220][dpr.data.biencoder_data][INFO] - get_dpr_files: os.path.isabs(G:/learning/iisc dl/capstone/DPR/downloads/data/wikipedia_split/psgs_w100.tsv) = True
+[2025-05-20 19:08:46,221][dpr.data.biencoder_data][INFO] - get_dpr_files: os.path.isfile(G:/learning/iisc dl/capstone/DPR/downloads/data/wikipedia_split/psgs_w100.tsv) = True
+[2025-05-20 19:08:46,221][dpr.data.biencoder_data][INFO] - get_dpr_files: os.path.exists(G:/learning/iisc dl/capstone/DPR/downloads/data/wikipedia_split/psgs_w100.tsv) = True
+[2025-05-20 19:08:46,222][dpr.data.biencoder_data][INFO] - get_dpr_files: Matched absolute file path: ['G:/learning/iisc dl/capstone/DPR/downloads/data/wikipedia_split/psgs_w100.tsv']
+[2025-05-20 19:08:46,222][dpr.data.retriever_data][INFO] - Reading file G:/learning/iisc dl/capstone/DPR/downloads/data/wikipedia_split/psgs_w100.tsv

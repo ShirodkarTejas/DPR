@@ -2,7 +2,7 @@
 
 nq_test:
   _target_: dpr.data.retriever_data.CsvQASrc
-  file: data.retriever.qas.nq-test
+  file: G:/learning/iisc dl/capstone/DPR/downloads/data/retriever/qas/nq-test.csv
   #query_special_suffix: '?'
 
 nq_train:

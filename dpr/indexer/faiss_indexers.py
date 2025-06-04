@@ -14,6 +14,7 @@ import logging
 import numpy as np
 import os
 import pickle
+import torch
 
 from typing import List, Tuple
 
@@ -84,11 +85,32 @@ class DenseIndexer(object):
 
 
 class DenseFlatIndexer(DenseIndexer):
-    def __init__(self, buffer_size: int = 50000):
+    def __init__(self, buffer_size: int = 50000, gpu_id: int = -1):
+        logger.info(f"DenseFlatIndexer.__init__ called with buffer_size={buffer_size}, gpu_id={gpu_id}")
         super(DenseFlatIndexer, self).__init__(buffer_size=buffer_size)
+        self.gpu_id = gpu_id
+        self.gpu_resources = None
 
     def init_index(self, vector_sz: int):
-        self.index = faiss.IndexFlatIP(vector_sz)
+        logger.info(f"DenseFlatIndexer.init_index called with vector_sz={vector_sz}, self.gpu_id={self.gpu_id}")
+        if self.gpu_id >= 0 and torch.cuda.is_available():
+            logger.info(f"Attempting to initialize FAISS index on GPU: {self.gpu_id}")
+            try:
+                self.gpu_resources = faiss.StandardGpuResources()
+                cpu_index = faiss.IndexFlatIP(vector_sz)
+                self.index = faiss.index_cpu_to_gpu(
+                    self.gpu_resources, self.gpu_id, cpu_index
+                )
+                logger.info(f"Successfully initialized FAISS IndexFlatIP on GPU: {self.gpu_id}")
+            except Exception as e:
+                logger.error(f"Failed to initialize FAISS on GPU: {self.gpu_id}. Error: {e}")
+                logger.info("Falling back to CPU for FAISS index.")
+                self.index = faiss.IndexFlatIP(vector_sz)
+        else:
+            if self.gpu_id >= 0 and not torch.cuda.is_available():
+                logger.warning(f"GPU {self.gpu_id} requested for FAISS, but CUDA is not available. Using CPU.")
+            self.index = faiss.IndexFlatIP(vector_sz)
+            logger.info("Initialized FAISS IndexFlatIP on CPU.")
 
     def index_data(self, data: List[Tuple[object, np.array]]):
         n = len(data)
